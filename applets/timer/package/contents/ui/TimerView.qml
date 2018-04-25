@@ -51,13 +51,14 @@ Item {
 
     Timer {
         id: t;
-        interval: 1000;
+        interval: 20;
         onTriggered: {
-            if (root.seconds != 0) {
-                root.seconds--;
+            var ts = new Date().getTime();
+            if (root.seconds > 0) {
+                root.seconds = root.initialSeconds - Math.floor((ts-root.startedAt)/1000);
             }
-            if (root.seconds == 0) {
-                root.running = false;
+            if (root.seconds <= 0) {
+                resetTimer();
 
                 if (showNotification) {
                     root.createNotification();
@@ -65,7 +66,6 @@ Item {
                 if (runCommand) {
                     TimerPlasmoid.Timer.runCommand(command);
                 }
-                saveTimer();
             }
         }
         repeat: true;

@@ -35,6 +35,12 @@ Item {
     property bool running: (plasmoid.configuration.running > 0) ? true : false;
     property bool suspended: false;
 
+    // timestamp from when the user clicked 'start timer'; in ms
+    property var startedAt: 0;
+    // value of 'seconds' when the user clicked 'start timer'
+    property int initialSeconds: 0;
+
+
     property string notificationText: plasmoid.configuration.notificationText;
 
     Plasmoid.toolTipMainText: {
@@ -100,6 +106,8 @@ Item {
             (sec % 60) % 10;
     }
     function startTimer() {
+        startedAt = new Date().getTime();
+        initialSeconds = seconds;
         running = true;
         suspended = false;
         opacityNeedsReset()
@@ -109,6 +117,8 @@ Item {
     function stopTimer() {
         running = false;
         suspended = true;
+        startedAt = 0;
+        initialSeconds = 0;
         saveTimer();
     }
 
@@ -116,6 +126,8 @@ Item {
         running = false;
         suspended = false;
         seconds = 0;
+        startedAt = 0;
+        initialSeconds = 0;
         opacityNeedsReset()
         saveTimer();
     }
